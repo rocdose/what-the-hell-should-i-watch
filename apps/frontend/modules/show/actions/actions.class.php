@@ -17,6 +17,11 @@ class showActions extends sfActions
   */
   public function executeIndex(sfWebRequest $request)
   {
+    $trakt = new Trakt();
+    if (($this->genres = $trakt->getGenres()) !== false)
+    {
+      $this->genres = json_decode($this->genres);
+    }
   }
 
   /**
@@ -27,31 +32,47 @@ class showActions extends sfActions
   public function executeSearch(sfWebRequest $request)
   {
     $query = $request->getParameter('query');
+    $type  = $request->getParameter('type');
     $this->error = false;
     $trakt = new Trakt();
-    if (($results = $trakt->searchShow($query)) === false)
+    if ($type == 'title')
     {
-      $this->error = true;
-      $this->error_message = 'An error occured';
-    }
-    else
-    {
-      $results = json_decode($results, true);
-      $this->found_it = false; // we have an exact match
-      foreach ($results as $result)
+      if (($results = $trakt->searchShow($query)) === false)
       {
-        if (strcasecmp($result['title'], $query) == 0) // match
+        $this->error = true;
+        $this->error_message = 'An error occured';
+      }
+      else
+      {
+        $results = json_decode($results, true);
+        $this->found_it = false; // we have an exact match
+        foreach ($results as $result)
         {
-          $this->found_it = true;
-          $this->result   = $result;
-          break;
+          if (strcasecmp($result['title'], $query) == 0) // match
+          {
+            $this->found_it = true;
+            $this->result   = $result;
+            break;
+          }
+        }
+        if (!$this->found_it)
+        {
+          $this->results = $results;
         }
       }
-      if (!$this->found_it)
+    }
+    else if ($type == 'genre')
+    {
+      if (($results = $trakt->searchGenre($request->getParameter('query'))) === false)
       {
-        $this->results = $results;
+        $this->error = true;
+        $this->error_message = 'An error occured';
+      }
+      else
+      {
+        $this->results = json_decode($results, true);
+        $this->found_it = false; // we have an exact match
       }
     }
-
   }
 }
