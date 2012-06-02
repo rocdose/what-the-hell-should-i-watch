@@ -18,10 +18,7 @@ class showActions extends sfActions
   public function executeIndex(sfWebRequest $request)
   {
     $trakt = new Trakt();
-    if (($this->genres = $trakt->getGenres()) !== false)
-    {
-      $this->genres = json_decode($this->genres);
-    }
+    $this->genres = $trakt->getGenres();
   }
 
   /**
@@ -44,8 +41,7 @@ class showActions extends sfActions
       }
       else
       {
-        $results = json_decode($results, true);
-        $this->found_it = false; // we have an exact match
+        $this->found_it = false; 
         foreach ($results as $result)
         {
           if (strcasecmp($result['title'], $query) == 0) // match
@@ -63,15 +59,26 @@ class showActions extends sfActions
     }
     else if ($type == 'genre')
     {
-      if (($results = $trakt->searchGenre($request->getParameter('query'))) === false)
+      if (($this->results = $trakt->searchGenre($request->getParameter('query'), 'percentage')) === false)
       {
         $this->error = true;
         $this->error_message = 'An error occured';
       }
       else
       {
-        $this->results = json_decode($results, true);
-        $this->found_it = false; // we have an exact match
+        $this->found_it = false; 
+      }
+    }
+    else if ($type == 'related')
+    {
+      if (($this->results = $trakt->searchRelated($request->getParameter('query'), 'percentage')) === false)
+      {
+        $this->error = true;
+        $this->error_message = 'An error occured';
+      }
+      else
+      {
+        $this->found_it = false; 
       }
     }
   }

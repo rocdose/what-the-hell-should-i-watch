@@ -22,7 +22,7 @@
 <ul>
 <?php foreach ($results as $result): ?>
 <li>
-  <a href="<?php echo "http://www.trakt.tv/show/".Doctrine_Inflector::urlize($result['title']); ?>"><?php echo $result['title'] ?></a>
+  <a href="<?php echo "/show/search?type=related&query=".Doctrine_Inflector::urlize($result['title']); ?>"><?php echo $result['title'] ?></a>
 <?php if ($result['ratings']['percentage'] < sfConfig::get('app_ratings_low')): ?>
     Everyone hates this and you should too.
 <?php elseif ($result['ratings']['percentage'] < sfConfig::get('app_ratings_average')): ?>
@@ -37,7 +37,8 @@
   <ul>
     <li><a href="<?php echo "http://www.imdb.com/title/".$result['imdb_id']."/reviews?filter=hate" ?>">Why this stinks</a></li>
     <li><a href="<?php echo "http://www.imdb.com/title/".$result['imdb_id']."/reviews?filter=love" ?>">What stupid fans say</a></li>
-</ul>
+  </ul>
+  <?php echo image_tag($result['images']['banner']) ?>
 </li>
 <?php endforeach; ?>
 </ul>
