@@ -19,27 +19,34 @@
   else:
 ?>
 <h1>Here's what I've got</h1>
-<ul>
 <?php foreach ($results as $result): ?>
-<li>
-  <a href="<?php echo "/show/search?type=related&query=".Doctrine_Inflector::urlize($result['title']); ?>"><?php echo $result['title'] ?></a>
-<?php if ($result['ratings']['percentage'] < sfConfig::get('app_ratings_low')): ?>
-    Everyone hates this and you should too.
-<?php elseif ($result['ratings']['percentage'] < sfConfig::get('app_ratings_average')): ?>
-    BORING, move on.
-<?php elseif ($result['ratings']['percentage'] < sfConfig::get('app_ratings_high')): ?>
-    Try it.
-<?php elseif ($result['ratings']['percentage'] < sfConfig::get('app_ratings_top')): ?>
-    Watch it, it's good.
-<?php else: ?>
-    This shit is fucking fantastic.
-<?php endif; ?>
-  <ul>
-    <li><a href="<?php echo "http://www.imdb.com/title/".$result['imdb_id']."/reviews?filter=hate" ?>">Why this stinks</a></li>
-    <li><a href="<?php echo "http://www.imdb.com/title/".$result['imdb_id']."/reviews?filter=love" ?>">What stupid fans say</a></li>
-  </ul>
-  <?php echo image_tag($result['images']['banner']) ?>
-</li>
+<div style="width:1351px;height:200px;">
+  <div style="float:left;width:250px;">
+    <ul>
+      <li>
+        <b><a href="<?php echo "http://www.imdb.com/title/".$result['imdb_id'] ?>"><?php echo $result['title'] ?></a></b>
+      <?php if ($result['ratings']['percentage'] < sfConfig::get('app_ratings_low')): ?>
+          Everyone hates this and you should too.
+      <?php elseif ($result['ratings']['percentage'] < sfConfig::get('app_ratings_average')): ?>
+          BORING, move on.
+      <?php elseif ($result['ratings']['percentage'] < sfConfig::get('app_ratings_high')): ?>
+          Average boring.
+      <?php elseif ($result['ratings']['percentage'] < sfConfig::get('app_ratings_top')): ?>
+          Supposedly good.
+      <?php else: ?>
+          Fucking fantastic.
+      <?php endif; ?>
+        <ul>
+          <li><a href="<?php echo "http://www.imdb.com/title/".$result['imdb_id']."/reviews?filter=hate" ?>">Why this stinks</a></li>
+          <li><a href="<?php echo "http://www.imdb.com/title/".$result['imdb_id']."/reviews?filter=love" ?>">What stupid fans say</a></li>
+          <li><a href="<?php echo "/show/search?type=related&query=".Doctrine_Inflector::urlize($result['title']); ?>">More things like this please.</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+  <div style="float:right;width:1051px;display:inline;margin-left: auto; margin-right: 30px">
+    <?php echo image_tag($result['images']['banner']) ?>
+  </div>
+</div>
 <?php endforeach; ?>
-</ul>
 <?php endif; ?>
